@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+**/node_modules/
+bun.lockb
+package-lock.json
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Prisma
+backend/generated/
+backend/prisma/migrations/
+
+# Build outputs
+dist/
+build/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+postgres_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -13,6 +13,37 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Games {
+  ENSHROUDED
+}
+
+enum GameStatus {
+  CREATING
+  RUNNING
+  STOPPED
+  ERROR
+}
+
+model GameServer {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        Games
+  serverName  String
+  password    String?
+  ip          String?
+  port        Int        @unique
+  containerId String?    @unique
+  status      GameStatus @default(CREATING)
+  maxPlayers  Int        @default(10)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("server")
+}
+
 model User {
   id            String    @id
   name          String
@@ -23,6 +54,8 @@ model User {
   updatedAt     DateTime  @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  servers GameServer[]
 
   @@unique([email])
   @@map("user")

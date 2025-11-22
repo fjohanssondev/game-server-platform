@@ -1,8 +1,8 @@
 import { db } from "../../../lib/db";
 import { ServerModel } from "./model";
 
-export abstract class Server {
-  static async getServers(userId: string) {
+export abstract class ServerService {
+  static async getAll(userId: string) {
     const servers = await db.gameServer.findMany({
       where: {
         userId,
@@ -17,10 +17,19 @@ export abstract class Server {
 
     return servers;
   }
-  static async createServer(
-    userId: string,
-    input: ServerModel.CreateServerInput
-  ) {
+
+  static async getById(userId: string, id: string) {
+    const server = await db.gameServer.findUnique({
+      where: {
+        userId,
+        id,
+      },
+    });
+
+    return server;
+  }
+
+  static async create(userId: string, input: ServerModel.CreateServerInput) {
     const server = await db.gameServer.create({
       data: {
         serverName: input.serverName,

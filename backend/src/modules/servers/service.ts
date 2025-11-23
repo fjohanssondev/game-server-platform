@@ -35,6 +35,7 @@ export abstract class ServerService {
         serverName: input.serverName,
         password: input.password,
         maxPlayers: input.maxPlayers || 4,
+        containerId: "",
         port: 15636,
         status: "CREATING",
         userId,
@@ -43,5 +44,31 @@ export abstract class ServerService {
     });
 
     return server;
+  }
+
+  static async delete(userId: string, serverId: string) {
+    const server = await db.gameServer.delete({
+      where: {
+        id: serverId,
+        userId,
+      },
+    });
+
+    return server;
+  }
+
+  static async setContainerInfo(
+    serverId: string,
+    containerId: string,
+    port: number
+  ) {
+    return await db.gameServer.update({
+      where: { id: serverId },
+      data: {
+        containerId,
+        status: "RUNNING",
+        port,
+      },
+    });
   }
 }

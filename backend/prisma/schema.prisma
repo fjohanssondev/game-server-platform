@@ -33,7 +33,7 @@ model GameServer {
   password    String?
   ip          String?
   port        Int        @unique
-  containerId String?    @unique
+  containerId String     @unique
   status      GameStatus @default(CREATING)
   maxPlayers  Int        @default(10)
   createdAt   DateTime   @default(now())

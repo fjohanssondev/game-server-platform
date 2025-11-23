@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { ServerService } from "./service";
 import { ServerModel } from "./model";
 import { betterAuthContext } from "../../../plugins/auth";
+import { ContainerService } from "../containers/server";
 
 export const serversModule = new Elysia({ prefix: "/api/servers" })
   .use(betterAuthContext)
@@ -15,14 +16,41 @@ export const serversModule = new Elysia({ prefix: "/api/servers" })
   .get(
     "/:id",
     async ({ params: { id }, user }) => {
-      return await ServerService.getById(user.id, id);
+      const server = await ServerService.getById(user.id, id);
+
+      if (!server) {
+        throw new Error("Server not found");
+      }
+
+      const containerStatus = await ContainerService.getStatus(
+        server.containerId
+      );
+
+      return {
+        ...server,
+        container: containerStatus,
+      };
     },
     { auth: true }
   )
   .post(
     "/",
     async ({ body, user }) => {
-      return await ServerService.create(user.id, body);
+      try {
+        const server = await ServerService.create(user.id, body);
+
+        try {
+          const { containerId, port } = await ContainerService.create(server);
+          await ServerService.setContainerInfo(server.id, containerId, port);
+
+          return server;
+        } catch (err) {
+          await ServerService.delete(user.id, server.id);
+          throw new Error("Failed to create container");
+        }
+      } catch (err) {
+        throw err;
+      }
     },
     {
       body: ServerModel.createServerSchema,

@@ -9,9 +9,7 @@ export const Route = createRootRoute({
     <>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Header />
-        <div className="container mx-auto px-4">
-          <Outlet />
-        </div>
+        <Outlet />
       </ThemeProvider>
       <TanStackDevtools
         config={{

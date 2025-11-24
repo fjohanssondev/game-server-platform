@@ -57,9 +57,9 @@ function DashboardComponent() {
           <CreateServerDialog />
         </div>
         <section className="mt-6">
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {servers.map((server) => (
-              <ServerCard {...server} />
+              <ServerCard key={server.id} {...server} />
             ))}
           </div>
         </section>

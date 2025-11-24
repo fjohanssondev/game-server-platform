@@ -9,12 +9,6 @@ export abstract class ServerService {
       },
     });
 
-    if (servers.length < 1) {
-      return {
-        message: "You haven't created a server yet",
-      };
-    }
-
     return servers;
   }
 

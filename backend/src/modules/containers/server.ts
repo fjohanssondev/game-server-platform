@@ -5,7 +5,11 @@ const docker = new Dockerode();
 
 export abstract class ContainerService {
   static async create(server: GameServer) {
-    const containerName = `${server.type}-${server.serverName}-${server.id}`;
+    const slug = server.serverName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    const containerName = `${server.type.toLowerCase()}-${slug}-${server.id}`;
 
     const container = await docker.createContainer({
       name: containerName,

@@ -38,13 +38,14 @@ export const serversModule = new Elysia({ prefix: "/api/servers" })
     async ({ body, user }) => {
       try {
         const server = await ServerService.create(user.id, body);
-
+        console.log("Server created:", server);
         try {
           const { containerId, port } = await ContainerService.create(server);
           await ServerService.setContainerInfo(server.id, containerId, port);
 
           return server;
         } catch (err) {
+          console.error("Original error:", err);
           await ServerService.delete(user.id, server.id);
           throw new Error("Failed to create container");
         }

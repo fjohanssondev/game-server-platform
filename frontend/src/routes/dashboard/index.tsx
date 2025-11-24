@@ -1,4 +1,7 @@
+import { Container } from "@/components/container";
+import { CreateServerDialog } from "@/components/dialogs/create-server";
 import { NoServers } from "@/components/no-servers";
+import { ServerCard } from "@/components/server-card";
 import { Spinner } from "@/components/ui/spinner";
 import { useServers } from "@/hooks/use-servers";
 import { createFileRoute } from "@tanstack/react-router";
@@ -39,10 +42,20 @@ function DashboardComponent() {
   }
 
   return (
-    <main>
-      {servers.map((server) => (
-        <span>{server.serverName}</span>
-      ))}
+    <main className="mt-14">
+      <Container className="flex flex-col">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl">Dashboard</h1>
+          <CreateServerDialog />
+        </div>
+        <section className="mt-6">
+          <div className="grid grid-cols-3 gap-6">
+            {servers.map((server) => (
+              <ServerCard {...server} />
+            ))}
+          </div>
+        </section>
+      </Container>
     </main>
   );
 }

@@ -6,3 +6,8 @@ export const client = treaty<App>("localhost:3000", {
     credentials: "include",
   },
 });
+
+export type ServersResponse = Awaited<
+  ReturnType<typeof client.api.servers.get>
+>["data"];
+export type Server = NonNullable<ServersResponse>[number];

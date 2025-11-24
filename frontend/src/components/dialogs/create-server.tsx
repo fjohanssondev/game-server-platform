@@ -31,7 +31,7 @@ import { client } from "@/lib/eden";
 import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z.object({
-  name: z.string().min(3).max(20),
+  name: z.string().min(3).max(30),
   password: z.string().min(5).max(30),
   game: z.enum(["ENSHROUDED"]),
 });

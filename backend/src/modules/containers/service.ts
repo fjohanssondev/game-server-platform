@@ -1,5 +1,6 @@
 import Dockerode from "dockerode";
 import type { GameServer } from "../../../generated/prisma_client/client";
+import { getServerIP } from "../../../lib/network";
 
 const docker = new Dockerode();
 
@@ -37,6 +38,7 @@ export abstract class ContainerService {
     return {
       containerId: container.id,
       port: assignedPort,
+      ip: getServerIP(),
     };
   }
 

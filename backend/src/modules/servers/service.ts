@@ -1,3 +1,4 @@
+import { decrypt, encrypt } from "../../../lib/crypto";
 import { db } from "../../../lib/db";
 import { ServerModel } from "./model";
 
@@ -20,6 +21,10 @@ export abstract class ServerService {
       },
     });
 
+    if (server?.password) {
+      server.password = decrypt(server.password);
+    }
+
     return server;
   }
 
@@ -27,9 +32,10 @@ export abstract class ServerService {
     const server = await db.gameServer.create({
       data: {
         serverName: input.serverName,
-        password: input.password,
+        password: encrypt(input.password),
         maxPlayers: input.maxPlayers || 4,
         containerId: "",
+        ip: "",
         port: 15636,
         status: "CREATING",
         userId,
@@ -54,7 +60,8 @@ export abstract class ServerService {
   static async setContainerInfo(
     serverId: string,
     containerId: string,
-    port: number
+    port: number,
+    ip: string
   ) {
     return await db.gameServer.update({
       where: { id: serverId },
@@ -62,6 +69,7 @@ export abstract class ServerService {
         containerId,
         status: "RUNNING",
         port,
+        ip,
       },
     });
   }

@@ -2,7 +2,7 @@ import { Elysia } from "elysia";
 import { ServerService } from "./service";
 import { ServerModel } from "./model";
 import { betterAuthContext } from "../../../plugins/auth";
-import { ContainerService } from "../containers/server";
+import { ContainerService } from "../containers/service";
 
 export const serversModule = new Elysia({ prefix: "/api/servers" })
   .use(betterAuthContext)
@@ -40,8 +40,15 @@ export const serversModule = new Elysia({ prefix: "/api/servers" })
         const server = await ServerService.create(user.id, body);
         console.log("Server created:", server);
         try {
-          const { containerId, port } = await ContainerService.create(server);
-          await ServerService.setContainerInfo(server.id, containerId, port);
+          const { containerId, port, ip } = await ContainerService.create(
+            server
+          );
+          await ServerService.setContainerInfo(
+            server.id,
+            containerId,
+            port,
+            ip
+          );
 
           return server;
         } catch (err) {

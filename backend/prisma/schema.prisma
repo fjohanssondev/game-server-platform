@@ -30,8 +30,8 @@ model GameServer {
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   type        Games
   serverName  String
-  password    String?
-  ip          String?
+  password    String
+  ip          String
   port        Int        @unique
   containerId String     @unique
   status      GameStatus @default(CREATING)

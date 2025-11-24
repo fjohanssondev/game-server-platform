@@ -1,3 +1,4 @@
+import { Container } from "@/components/container";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/servers/$serverId")({
@@ -5,5 +6,13 @@ export const Route = createFileRoute("/servers/$serverId")({
 });
 
 function ServerComponent() {
-  return <div>Hello "/servers/$serverId"!</div>;
+  return (
+    <main className="mt-14">
+      <Container className="flex flex-col">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl">Server Details</h1>
+        </div>
+      </Container>
+    </main>
+  );
 }

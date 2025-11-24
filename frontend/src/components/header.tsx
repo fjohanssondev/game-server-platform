@@ -4,7 +4,7 @@ export function Header() {
   return (
     <header className="h-14 border-b">
       <div className="flex h-full items-center justify-between container mx-auto px-4">
-        <span>Ember</span>
+        <Link to="/">Ember</Link>
         <nav>
           <ul className="flex space-x-4 text-sm">
             <li>

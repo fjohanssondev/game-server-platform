@@ -4,10 +4,18 @@ import { NoServers } from "@/components/no-servers";
 import { ServerCard } from "@/components/server-card";
 import { Spinner } from "@/components/ui/spinner";
 import { useServers } from "@/hooks/use-servers";
-import { createFileRoute } from "@tanstack/react-router";
+import { authClient } from "@/lib/auth-client";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/")({
   component: DashboardComponent,
+  beforeLoad: async () => {
+    const session = await authClient.getSession();
+
+    if (!session.data) {
+      throw redirect({ to: "/login" });
+    }
+  },
 });
 
 function DashboardComponent() {

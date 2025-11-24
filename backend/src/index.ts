@@ -4,7 +4,12 @@ import { serversModule } from "./modules/servers";
 import { betterAuthContext } from "../plugins/auth";
 
 const app = new Elysia()
-  .use(cors({ credentials: true }))
+  .use(
+    cors({
+      origin: process.env.FRONTEND_URL,
+      credentials: true,
+    })
+  )
   .use(betterAuthContext)
   .use(serversModule)
   .get("/api/health", () => ({ status: "ok" }))

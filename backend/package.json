@@ -3,6 +3,7 @@
   "type": "module",
   "version": "1.0.50",
   "scripts": {
+    "build": "bun build src/index.ts --outdir dist",
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts"
   },

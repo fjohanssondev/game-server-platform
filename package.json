@@ -1,0 +1,13 @@
+{
+  "name": "gameserver-platform",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

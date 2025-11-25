@@ -60,6 +60,48 @@ export abstract class ContainerService {
     };
   }
 
+  static async getPerformanceStats(containerId: string) {
+    const container = docker.getContainer(containerId);
+    const stats = await container.stats({ stream: false });
+
+    const cpuDelta =
+      stats.cpu_stats.cpu_usage.total_usage -
+      stats.precpu_stats.cpu_usage.total_usage;
+    const systemDelta =
+      stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
+    const cpuPercent =
+      (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100;
+
+    const memoryUsage = stats.memory_stats.usage;
+    const memoryLimit = stats.memory_stats.limit;
+    const memoryPercent = (memoryUsage / memoryLimit) * 100;
+
+    const networks = stats.networks || {};
+    const networkRx = Object.values(networks).reduce(
+      (acc: number, net: any) => acc + net.rx_bytes,
+      0
+    );
+    const networkTx = Object.values(networks).reduce(
+      (acc: number, net: any) => acc + net.tx_bytes,
+      0
+    );
+
+    return {
+      cpu: {
+        percent: cpuPercent.toFixed(2),
+      },
+      memory: {
+        usage: (memoryUsage / 1024 / 1024).toFixed(2), // MB
+        limit: (memoryLimit / 1024 / 1024).toFixed(2), // MB
+        percent: memoryPercent.toFixed(2),
+      },
+      network: {
+        rx: (networkRx / 1024 / 1024).toFixed(2), // MB
+        tx: (networkTx / 1024 / 1024).toFixed(2), // MB
+      },
+    };
+  }
+
   static async getById(id: string) {
     const container = docker.getContainer(id);
     const info = await container.inspect();

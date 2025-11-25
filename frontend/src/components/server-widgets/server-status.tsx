@@ -6,12 +6,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import type { Server } from "@/lib/eden";
+import { client, type Server } from "@/lib/eden";
 import { HeartPulse } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { useQuery } from "@tanstack/react-query";
 
 export function ServerStatus(server: Server) {
+  const { data } = useQuery({
+    queryKey: ["server-status", server.id],
+    queryFn: async () => {
+      const { data, error } = await client.api
+        .servers({ id: server.id })
+        .stats.get();
+
+      if (error) throw error;
+
+      return data;
+    },
+    refetchInterval: 3000,
+    enabled: !!server.id,
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -32,6 +47,19 @@ export function ServerStatus(server: Server) {
           <li className="flex justify-between">
             <span>Uptime</span>
             <span>4d</span>
+          </li>
+          <li className="flex flex-col space-y-2">
+            <p className="text-sm">CPU</p>
+            <Progress value={Number(data?.cpu.percent)} />
+          </li>
+          <li className="flex flex-col space-y-2">
+            <div className="flex justify-between items-center">
+              <p className="text-sm">RAM</p>
+              <p className="text-xs">
+                {(Number(data?.memory.limit) / 1000).toFixed(2)} GB
+              </p>
+            </div>
+            <Progress value={Number(data?.memory.percent)} />
           </li>
         </ul>
       </CardContent>

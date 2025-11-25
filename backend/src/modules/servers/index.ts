@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { ServerService } from "./service";
 import { ServerModel } from "./model";
 import { betterAuthContext } from "../../../plugins/auth";
@@ -32,6 +32,24 @@ export const serversModule = new Elysia({ prefix: "/api/servers" })
       };
     },
     { auth: true }
+  )
+  .get(
+    "/:id/stats",
+    async ({ params: { id }, user }) => {
+      const server = await ServerService.getById(user.id, id);
+      if (!server) throw new Error("Server not found");
+
+      const stats = await ContainerService.getPerformanceStats(
+        server.containerId
+      );
+      return stats;
+    },
+    {
+      auth: true,
+      params: t.Object({
+        id: t.String(),
+      }),
+    }
   )
   .post(
     "/",

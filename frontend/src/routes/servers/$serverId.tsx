@@ -27,6 +27,7 @@ export const Route = createFileRoute("/servers/$serverId")({
 
 function ServerComponent() {
   const server = Route.useLoaderData();
+
   return (
     <main className="mt-14">
       <Container className="flex flex-col">

@@ -54,9 +54,14 @@ export abstract class ContainerService {
     const container = docker.getContainer(id);
     const info = await container.inspect();
 
+    const startedAt = new Date(info.State.StartedAt);
+    const now = new Date();
+    const uptime = now.getTime() - startedAt.getTime();
+
     return {
       containerId: info.Id,
       status: info.State.Status,
+      uptime,
     };
   }
 

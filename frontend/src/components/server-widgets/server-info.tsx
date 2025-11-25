@@ -33,22 +33,25 @@ export function ServerInfo(server: Server) {
               </Field>
             </FieldGroup>
             <FieldGroup>
+              <Field>
+                <FieldLabel>Game</FieldLabel>
+                <Input
+                  value={`${server.type.charAt(0)}${server.type
+                    .slice(1)
+                    .toLowerCase()}`}
+                  readOnly
+                />
+              </Field>
+            </FieldGroup>
+            <FieldGroup>
               <div className="flex gap-8">
                 <Field>
                   <FieldLabel>IP Address</FieldLabel>
-                  <Input
-                    className="text-muted-foreground"
-                    value={server.ip}
-                    readOnly
-                  />
+                  <Input value={server.ip} readOnly />
                 </Field>
                 <Field>
                   <FieldLabel>Port</FieldLabel>
-                  <Input
-                    className="text-muted-foreground"
-                    value={server.port}
-                    readOnly
-                  />
+                  <Input value={server.port} readOnly />
                 </Field>
               </div>
             </FieldGroup>

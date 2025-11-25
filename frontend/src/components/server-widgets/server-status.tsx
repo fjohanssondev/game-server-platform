@@ -42,7 +42,7 @@ export function ServerStatus(server: Server) {
         <ul className="flex flex-col space-y-4">
           <li className="flex justify-between">
             <span>Status</span>
-            <span>Online</span>
+            <span>{server.status}</span>
           </li>
           <li className="flex justify-between">
             <span>Uptime</span>

@@ -14,7 +14,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     <>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Header />
-        <Outlet />
+        <div className="my-12">
+          <Outlet />
+        </div>
       </ThemeProvider>
       <TanStackDevtools
         config={{

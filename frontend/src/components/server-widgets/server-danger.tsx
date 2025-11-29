@@ -6,11 +6,45 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Server } from "@/lib/eden";
+import { client, type Server } from "@/lib/eden";
 import { TriangleAlert } from "lucide-react";
 import { Button } from "../ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Spinner } from "@/components/ui/spinner";
 
 export function ServerDanger(server: Server) {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["server-delete"],
+    mutationFn: async () => {
+      const { data, error } = await client.api
+        .servers({ id: server.id })
+        .delete();
+
+      if (error) throw error;
+
+      return data.success;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["servers"],
+      });
+      //TODO: navigate
+    },
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -24,7 +58,28 @@ export function ServerDanger(server: Server) {
       </CardHeader>
       <CardContent>
         <div className="flex space-x-4">
-          <Button>Delete server</Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">
+                {isPending ? <Spinner /> : "Delete Server"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your server and remove your data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => mutate()}>
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button variant="outline">Pause Server</Button>
         </div>
       </CardContent>

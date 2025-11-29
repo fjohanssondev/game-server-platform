@@ -130,4 +130,19 @@ export abstract class ContainerService {
       })),
     };
   }
+
+  static async delete(id: string) {
+    try {
+      const container = docker.getContainer(id);
+
+      await container.remove({ force: true });
+
+      return { success: true };
+    } catch (error: any) {
+      if (error.statusCode === 404) {
+        return { success: true };
+      }
+      throw error;
+    }
+  }
 }

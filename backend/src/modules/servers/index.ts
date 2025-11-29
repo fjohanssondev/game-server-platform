@@ -46,9 +46,6 @@ export const serversModule = new Elysia({ prefix: "/api/servers" })
     },
     {
       auth: true,
-      params: t.Object({
-        id: t.String(),
-      }),
     }
   )
   .post(
@@ -82,4 +79,20 @@ export const serversModule = new Elysia({ prefix: "/api/servers" })
       body: ServerModel.createServerSchema,
       auth: true,
     }
+  )
+  .delete(
+    "/:id",
+    async ({ params: { id }, user }) => {
+      const server = await ServerService.getById(user.id, id);
+
+      if (!server) throw new Error("Server not found");
+
+      await ContainerService.delete(server.containerId);
+      await ServerService.delete(user.id, id);
+
+      console.log("Deleted server: ", server);
+
+      return { success: true };
+    },
+    { auth: true }
   );
